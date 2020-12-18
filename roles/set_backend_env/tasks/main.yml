@@ -1,0 +1,33 @@
+---
+- name: Create work directory
+  file:
+    path: /tmp/backend
+    state: directory
+    mode: '0755'
+
+- name: Install Python et pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+      - virtualenv
+      - python-setuptools
+      - python3-setuptools
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Clone Repo in backend server
+  git:
+    repo: https://github.com/testdrivenio/flask-vue-crud.git
+    dest: /tmp/backend
+    force: yes
+
+- name: Install requirements
+  pip:
+    requirements: /tmp/backend/server/requirements.txt
+    virtualenv: /tmp/backend/venv
+    virtualenv_python: python3
+
+

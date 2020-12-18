@@ -8,6 +8,12 @@
     data: alive
   tags: check
 
+- name: Install git
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+  become: yes
 # Add further tasks for the common role (applied to all servers) to this playbook...
 
 ...

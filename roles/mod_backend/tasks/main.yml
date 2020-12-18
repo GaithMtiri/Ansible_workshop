@@ -1,0 +1,16 @@
+---
+- name: Change the the serve commande
+  lineinfile:
+    path: /tmp/backend/server/app.py
+    regexp: '    app.run()'
+    line: "    app.run(host='0.0.0.0')"
+
+- name: Run Backend
+  shell: source /tmp/backend/venv/bin/activate && nohup python /tmp/backend/server/app.py >/dev/null 2>&1 &
+  args:
+    executable: /bin/bash
+
+
+
+
+

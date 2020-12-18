@@ -1,0 +1,42 @@
+---
+- name: Create work directory
+  file:
+    path: /tmp/frontend
+    state: directory
+    mode: '0755'
+
+- name: Install NPM
+  apt:
+    name:
+      - npm
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Upgrade NPM
+  shell: "{{ item }}"
+  args:
+    executable: /bin/bash
+  become: yes
+  loop:
+    - npm cache clean -f
+    - npm install -g n
+    - n stable
+
+- name: Clone Repo in backend server
+  git:
+    repo: https://github.com/testdrivenio/flask-vue-crud.git
+    dest: /tmp/frontend
+    force: yes
+
+- name: Install packages
+  community.general.npm:
+    path: /tmp/frontend/client/
+
+- name: "Install forever (to run Node.js app)."
+  npm:
+    name: forever
+    global: yes
+    state: present
+  become: yes
+

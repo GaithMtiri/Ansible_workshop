@@ -1,6 +1,9 @@
 ---
-- import_playbook: anygroup.yml
-
-# Import all other group playbooks in this file...
-
-...
+- hosts: all
+  gather_facts: True
+  roles:
+    - common
+    - set_backend_env
+    - set_frontend_env
+    - mod_frontend
+    - mod_backend

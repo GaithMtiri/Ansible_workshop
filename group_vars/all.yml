@@ -1,7 +1,8 @@
 ---
 # Default is to log in as root
+ansible_connection: ssh
 ansible_user: root
-remote_user: root
+ansible_ssh_pass: toor
 
 # Add further variables which apply to all servers to this file...
 

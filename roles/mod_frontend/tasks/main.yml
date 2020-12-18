@@ -1,0 +1,37 @@
+---
+- name: Parse BackEnd Ip
+  set_fact:
+    backend_ip: "{{ groups['backend'][0]}}"
+
+- name: Template Books
+  template:
+    src: ../templates/Books.vue.j2
+    dest: /tmp/frontend/client/src/components/Books.vue
+    variable_start_string: '[%'
+    variable_end_string: '%]'
+    mode: '0755'
+    force: yes
+
+- name: Change the IP in Ping
+  lineinfile:
+    path: /tmp/frontend/client/src/components/Ping.vue
+    regexp: "const path = 'http://localhost:5000/ping';"
+    line: const path = 'http://{{ backend_ip }}:5000/ping';
+
+- name: Change the the serve commande
+  lineinfile:
+    path: /tmp/frontend/client/package.json
+    regexp: '"serve": "vue-cli-service serve",'
+    line: '"serve": "vue-cli-service serve --port 8080 --host 0.0.0.0",'
+
+
+- name: "Check list of Node.js apps running."
+  command: forever list
+  register: forever_list
+  changed_when: false
+
+- name: "Start the Node app"
+  shell: forever --minUptime 5000 --spinSleepTime 20000 start -c "npm run serve" src/main.js
+  args:
+    executable: /bin/bash
+    chdir: /tmp/frontend/client
